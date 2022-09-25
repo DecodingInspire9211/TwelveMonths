@@ -5,8 +5,8 @@ using TMPro;
 
 public class dateui : MonoBehaviour
 {
-    public TMP_Text hourt, minutet, dayt, montht, yeart;
-    
+    public TMP_Text hourt, minutet, dayt, montht, yeart, weekdayt;
+
     public GlobalTime gt;
 
 
@@ -37,6 +37,31 @@ public class dateui : MonoBehaviour
         else
         {
             dayt.SetText($"{gt.day}");
+        }
+
+        switch(gt.weekday)
+        {
+            case 1:
+                weekdayt.SetText($"Montag");
+                break;
+            case 2:
+                weekdayt.SetText($"Dienstag");
+                break;
+            case 3:
+                weekdayt.SetText($"Mittwoch");
+                break;
+            case 4:
+                weekdayt.SetText($"Donnerstag");
+                break;
+            case 5:
+                weekdayt.SetText($"Freitag");
+                break;
+            case 6:
+                weekdayt.SetText($"Samstag");
+                break;
+            case 7:
+                weekdayt.SetText($"Sonntag");
+                break;
         }
 
         switch(gt.month)
@@ -78,6 +103,7 @@ public class dateui : MonoBehaviour
                 montht.SetText($"Dec");
                 break;
         }
+
         yeart.SetText($"{gt.year}");
 
     }

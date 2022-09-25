@@ -1,22 +1,92 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GlobalTime : MonoBehaviour
 {
+    public DateTime totalstart = new DateTime(1848, 01, 01, 00, 00, 00);
+    public DateTime start = new DateTime(1848, 03, 13, 14, 23, 0);
+    public DateTime current = new DateTime();
+
     public uint duration = 0;
-    public uint minute = 0;
-    public uint hour = 0;
-    public uint day = 1;
-    public uint month = 1;
-    public uint year = 1848;
-
-
+    public long offset = 0, offsetsincenewyear = 0; 
     public int DelayAmount = 1;
     protected float Timer;
 
-    // Update is called once per frame
+    public int minute, hour, day, month, year, weekday;
+    int _year;
+    long timestampstart, timestamptotal;
+
+    void Start()
+    {
+        minute = start.Minute;
+        hour = start.Hour;
+        day = start.Day;
+        month = start.Month;
+        year = start.Year;
+
+        _year = start.Year;
+
+        timestamptotal = ((DateTimeOffset)totalstart).ToUnixTimeSeconds();
+        timestampstart = ((DateTimeOffset)start).ToUnixTimeSeconds();
+
+        offsetsincenewyear = timestampstart - timestamptotal;
+
+        weekday = (int)start.DayOfWeek;
+
+        //Debug.Log($"Game starts on {weekday} the {day}.{month}.{year} at {hour}:{minute}");
+        //Debug.Log($"First year offset is {offsetsincenewyear}");
+    }
+
     void Update()
+    {
+        Timer += (Time.deltaTime * 10);
+
+        if(Timer >= DelayAmount)
+        {
+            Timer = 0f;
+
+            offset++;
+            offsetsincenewyear += 60;
+            Debug.Log($"Offset since New Year {offsetsincenewyear}");
+            duration++;
+
+            current = start.AddMinutes(offset);
+
+            minute = current.Minute;
+            hour = current.Hour;
+            day = current.Day;
+            month = current.Month;
+            year = current.Year;
+
+            weekday = (int)current.DayOfWeek;
+
+            if(minute==0 && hour==0)
+            {
+                duration=0;
+            }
+
+            if(offsetsincenewyear == 14774400)
+            {
+                Debug.Log("SUMMER - SUN AT HIGHEST ALTITUDE AND LARGEST AZIMUTH");
+            }
+            if(offsetsincenewyear == 30585600)
+            {
+                Debug.Log("WINTER - SUN AT LOWEST ALTITUDE AND SMALLEST AZIMUTH");
+            }
+
+            if(year != _year)
+            {
+                _year = current.Year;
+                offsetsincenewyear = 0;
+                Debug.Log($"Reset to {offsetsincenewyear}");
+            }
+        }
+    }
+
+    // Update is called once per frame
+    /* void Update()
     {
         Timer += (Time.deltaTime);
 
@@ -76,5 +146,5 @@ public class GlobalTime : MonoBehaviour
                     break;
             }
         }
-    }
+    } */
 }
