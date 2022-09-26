@@ -6,7 +6,7 @@ using UnityEngine;
 public class GlobalTime : MonoBehaviour
 {
     public DateTime totalstart = new DateTime(1848, 01, 01, 00, 00, 00);
-    public DateTime start = new DateTime(1848, 03, 13, 14, 23, 0);
+    public DateTime start = new DateTime(1848, 06, 20, 14, 23, 0);
     public DateTime current = new DateTime();
 
     public uint duration = 0;
@@ -16,7 +16,7 @@ public class GlobalTime : MonoBehaviour
 
     public int minute, hour, day, month, year, weekday;
 
-    [Range(0.5f, 100f)]
+    [Range(0.5f, 1000f)]
     public float multiplier = 1f;
     int _year;
     long timestampstart, timestamptotal;
