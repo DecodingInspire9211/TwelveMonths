@@ -15,6 +15,9 @@ public class GlobalTime : MonoBehaviour
     protected float Timer;
 
     public int minute, hour, day, month, year, weekday;
+
+    [Range(0.5f, 100f)]
+    public float multiplier = 1f;
     int _year;
     long timestampstart, timestamptotal;
 
@@ -41,7 +44,7 @@ public class GlobalTime : MonoBehaviour
 
     void Update()
     {
-        Timer += (Time.deltaTime * 10);
+        Timer += (Time.deltaTime * multiplier);
 
         if(Timer >= DelayAmount)
         {
@@ -49,7 +52,7 @@ public class GlobalTime : MonoBehaviour
 
             offset++;
             offsetsincenewyear += 60;
-            Debug.Log($"Offset since New Year {offsetsincenewyear}");
+            //Debug.Log($"Offset since New Year {offsetsincenewyear}");
             duration++;
 
             current = start.AddMinutes(offset);
