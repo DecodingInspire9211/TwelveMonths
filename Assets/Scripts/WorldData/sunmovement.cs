@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class sunmovement : MonoBehaviour
+public class SunMovement : MonoBehaviour
 {
-
     public GlobalTime gt;
 
     public int DelayAmount = 1;
@@ -20,7 +19,7 @@ public class sunmovement : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Timer += (Time.deltaTime * gt.multiplier);
         if(Timer >= DelayAmount)
@@ -32,7 +31,7 @@ public class sunmovement : MonoBehaviour
         }
     }
 
-    void solstice()
+    public void solstice()
     {
         yearcycle = (gt.offsetsincenewyear+907200) / yearduration;
         float rise, set;
@@ -56,7 +55,7 @@ public class sunmovement : MonoBehaviour
         }
     }
 
-    void sunorbit()
+    public void sunorbit()
     {
         highpoint = new Vector3(elevation, 0, 0);
         lowpoint = new Vector3(-elevation, 0, 0);

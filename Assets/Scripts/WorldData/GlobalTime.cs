@@ -37,12 +37,14 @@ public class GlobalTime : MonoBehaviour
         offsetsincenewyear = timestampstart - timestamptotal;
 
         weekday = (int)start.DayOfWeek;
-
-        //Debug.Log($"Game starts on {weekday} the {day}.{month}.{year} at {hour}:{minute}");
-        //Debug.Log($"First year offset is {offsetsincenewyear}");
     }
 
-    void Update()
+    void FixedUpdate()
+    {
+        Global();
+    }
+
+    void Global()
     {
         Timer += (Time.deltaTime * multiplier);
 

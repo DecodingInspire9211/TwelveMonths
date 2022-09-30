@@ -3,14 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class dateui : MonoBehaviour
+public class DateUI : MonoBehaviour
 {
     public TMP_Text hourt, minutet, dayt, montht, yeart, weekdayt;
 
     public GlobalTime gt;
 
+    void FixedUpdate()
+    {
+        SetTime();
+    }
 
-    void Update()
+    public void SetTime()
+    {
+        SetMinute();
+        SetHours();
+        SetDays();
+        SetMonths();
+        SetYear();
+
+        SetWeekdays();
+    }
+
+    void SetMinute()
     {
         if(gt.minute < 10)
         {
@@ -20,7 +35,10 @@ public class dateui : MonoBehaviour
         {
             minutet.SetText($"{gt.minute}");
         }
+    }
 
+    void SetHours()
+    {
         if(gt.hour < 10)
         {
             hourt.SetText($"0{gt.hour}");
@@ -29,7 +47,10 @@ public class dateui : MonoBehaviour
         {
             hourt.SetText($"{gt.hour}");
         }
+    }
 
+    void SetDays()
+    {
         if(gt.day < 10)
         {
             dayt.SetText($"0{gt.day}");
@@ -38,7 +59,10 @@ public class dateui : MonoBehaviour
         {
             dayt.SetText($"{gt.day}");
         }
+    }
 
+    void SetWeekdays()
+    {
         switch(gt.weekday)
         {
             case 1:
@@ -63,8 +87,11 @@ public class dateui : MonoBehaviour
                 weekdayt.SetText($"Sonntag");
                 break;
         }
+    }
 
-        switch(gt.month)
+    void SetMonths()
+    {
+                switch(gt.month)
         {
             case 1:
                 montht.SetText($"Jän");
@@ -103,8 +130,11 @@ public class dateui : MonoBehaviour
                 montht.SetText($"Dec");
                 break;
         }
-
-        yeart.SetText($"{gt.year}");
-
     }
+
+    void SetYear()
+    {
+        yeart.SetText($"{gt.year}");
+    }
+
 }

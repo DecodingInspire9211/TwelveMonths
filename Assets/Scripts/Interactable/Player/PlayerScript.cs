@@ -6,27 +6,33 @@ using UnityEngine.InputSystem;
 
 public class PlayerScript : MonoBehaviour
 {
+    #region Essentials
     public GlobalTime gt;
     public Playercontrols playerControls;
     protected float Timer;
+    #endregion
 
+    #region MovementProperties
     public Rigidbody rb;
     public static float walk_velocity = 5f;
     public float spri_velocity = walk_velocity * 2;
 
     private float velocity;
     private bool isRunning = false;
-    float x = 0;
+    #endregion
 
+    #region PlayerInputAction
     Vector3 direction = Vector2.zero;
     private InputAction move;
     private InputAction look;
     private InputAction act;
     private InputAction sprint;
+    #endregion
 
+    #region PlayerStats
 
-    // Player Stats
-    // The Player Stats are affecting each other
+    //float x = 0;
+
     [SerializeField]
     float stamina = 100;
 
@@ -35,7 +41,7 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     float thirst = 100;
-
+    #endregion
 
     void Awake()
     {
@@ -62,19 +68,14 @@ public class PlayerScript : MonoBehaviour
         act.Disable();
         sprint.Disable();
     }
-
-    // Start is called before the first frame update
     void Start()
     {
         velocity = walk_velocity;
     }
-
-    // Update is called once per frame
     void Update()
     {
         direction = move.ReadValue<Vector2>();
     }
-
     private void FixedUpdate()
     {
         rb.velocity = new Vector3(direction.x * velocity, 0, direction.y * velocity);
@@ -94,36 +95,36 @@ public class PlayerScript : MonoBehaviour
         Debug.Log("Fire!");
     }
 
-    public float fallrate(float x)
-    {
-        double value = -(4f*Math.Pow(x, 4f)) + (7f*Math.Pow(x, 3f)) - (4*Math.Pow(x, 2f)) + 1f;
-        float fallrate = (float)value;
-        return fallrate;
-    }
+    // public float fallrate(float x)
+    // {
+    //     double value = -(4f*Math.Pow(x, 4f)) + (7f*Math.Pow(x, 3f)) - (4*Math.Pow(x, 2f)) + 1f;
+    //     float fallrate = (float)value;
+    //     return fallrate;
+    // }
 
-    public void hunger()
-    {
-        Timer += (Time.deltaTime * gt.multiplier);
+    // public void hunger()
+    // {
+    //     Timer += (Time.deltaTime * gt.multiplier);
 
-        if(Timer >= gt.DelayAmount)
-        {
-            Timer = 0;
-            x += 0.01f;
+    //     if(Timer >= gt.DelayAmount)
+    //     {
+    //         Timer = 0;
+    //         x += 0.01f;
 
-            hunger *= fallrate(x);
+    //         hunger *= fallrate(x);
 
-            Debug.Log($"x: {x}, h: {hunger}");
+    //         Debug.Log($"x: {x}, h: {hunger}");
 
-            if(hunger == 0)
-            {
-                hunger = 0;
-                x=0;
-            }
-            if(hunger < 0)
-            {
-                Debug.Log("You died");
-                x=0;
-            }
-        }
-    }
+    //         if(hunger == 0)
+    //         {
+    //             hunger = 0;
+    //             x=0;
+    //         }
+    //         if(hunger < 0)
+    //         {
+    //             Debug.Log("You died");
+    //             x=0;
+    //         }
+    //     }
+    // }
 }
