@@ -14,9 +14,17 @@ public class PlayerScript : MonoBehaviour
 
     #region MovementProperties
     public Rigidbody rb;
+    public Transform Target;
+    public Camera Camera;
+
+    public Vector3 Offset;
+    public float SmoothTime = 0.1f;
+
+    private Vector3 camvelocity = Vector3.zero;
+     private Vector3 targetvelocity = Vector3.zero;
+
     public static float walk_velocity = 5f;
     public float spri_velocity = walk_velocity * 2;
-
     private float velocity;
     private bool isRunning = false;
     #endregion
@@ -43,6 +51,12 @@ public class PlayerScript : MonoBehaviour
     float thirst = 100;
     #endregion
 
+    #region PlayerCamProperties
+    public float standardfov = 45f;
+    public float sprintfov = 46f;
+
+    #endregion
+
     void Awake()
     {
         playerControls = new Playercontrols();
@@ -52,6 +66,9 @@ public class PlayerScript : MonoBehaviour
     {
         move = playerControls.Player.Move;
         move.Enable();
+
+        look = playerControls.Player.Look;
+        look.Enable();
 
         act = playerControls.Player.Fire;
         act.Enable();
@@ -71,6 +88,8 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         velocity = walk_velocity;
+
+        Offset = Camera.transform.position - Target.position;
     }
     void Update()
     {
@@ -82,49 +101,43 @@ public class PlayerScript : MonoBehaviour
         isRunning = (playerControls.Player.Sprint.activeControl == null) ? true : false;
     }
 
+    private void LateUpdate()
+    {
+        FollowCamera();
+    }
     public void Sprint(InputAction.CallbackContext context)
     {
         if(isRunning)
+        {
             velocity = spri_velocity;
+            StartCoroutine(ChangeFOV(standardfov, sprintfov, 0.0625f));
+        }
         else
+        {
             velocity = walk_velocity;
+            StartCoroutine(ChangeFOV(sprintfov, standardfov, 0.0625f));
+        }
     }
-
     public void Fire(InputAction.CallbackContext context)
     {
         Debug.Log("Fire!");
     }
+    IEnumerator ChangeFOV(float start, float end, float duration)
+    {
+        float elapsed = 0.0f;
+        while (elapsed < duration )
+        {
+            Camera.fieldOfView = Mathf.Lerp(start, end, elapsed / duration );
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Camera.fieldOfView = end;
+    }
+    void FollowCamera()
+    {
+        Vector3 targetPosition = Target.position + Offset;
+        Camera.transform.position = Vector3.SmoothDamp(Camera.transform.position, targetPosition, ref camvelocity, 0.125f);
 
-    // public float fallrate(float x)
-    // {
-    //     double value = -(4f*Math.Pow(x, 4f)) + (7f*Math.Pow(x, 3f)) - (4*Math.Pow(x, 2f)) + 1f;
-    //     float fallrate = (float)value;
-    //     return fallrate;
-    // }
-
-    // public void hunger()
-    // {
-    //     Timer += (Time.deltaTime * gt.multiplier);
-
-    //     if(Timer >= gt.DelayAmount)
-    //     {
-    //         Timer = 0;
-    //         x += 0.01f;
-
-    //         hunger *= fallrate(x);
-
-    //         Debug.Log($"x: {x}, h: {hunger}");
-
-    //         if(hunger == 0)
-    //         {
-    //             hunger = 0;
-    //             x=0;
-    //         }
-    //         if(hunger < 0)
-    //         {
-    //             Debug.Log("You died");
-    //             x=0;
-    //         }
-    //     }
-    // }
+        Camera.transform.LookAt(Target);
+    }
 }
