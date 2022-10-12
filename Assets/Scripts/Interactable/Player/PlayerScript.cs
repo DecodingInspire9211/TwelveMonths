@@ -31,6 +31,7 @@ public class PlayerScript : MonoBehaviour
 
     #region PlayerInputAction
     Vector3 direction = Vector2.zero;
+    Vector3 orbit = Vector2.zero;
     private InputAction move;
     private InputAction look;
     private InputAction act;
@@ -54,7 +55,7 @@ public class PlayerScript : MonoBehaviour
     #region PlayerCamProperties
     public float standardfov = 45f;
     public float sprintfov = 46f;
-
+    public float sensitivity = 1.0f;
     #endregion
 
     void Awake()
@@ -94,6 +95,7 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         direction = move.ReadValue<Vector2>();
+        orbit = look.ReadValue<Vector2>();
     }
     private void FixedUpdate()
     {
@@ -107,16 +109,11 @@ public class PlayerScript : MonoBehaviour
     }
     public void Sprint(InputAction.CallbackContext context)
     {
+        velocity = isRunning ? spri_velocity : walk_velocity;
         if(isRunning)
-        {
-            velocity = spri_velocity;
             StartCoroutine(ChangeFOV(standardfov, sprintfov, 0.0625f));
-        }
-        else
-        {
-            velocity = walk_velocity;
+        if(!isRunning)
             StartCoroutine(ChangeFOV(sprintfov, standardfov, 0.0625f));
-        }
     }
     public void Fire(InputAction.CallbackContext context)
     {
@@ -133,11 +130,14 @@ public class PlayerScript : MonoBehaviour
         }
         Camera.fieldOfView = end;
     }
+
     void FollowCamera()
     {
         Vector3 targetPosition = Target.position + Offset;
-        Camera.transform.position = Vector3.SmoothDamp(Camera.transform.position, targetPosition, ref camvelocity, 0.125f);
+        Camera.transform.position = Vector3.SmoothDamp(Camera.transform.position, targetPosition, ref camvelocity, 0.1f);
 
         Camera.transform.LookAt(Target);
+
+        
     }
 }
