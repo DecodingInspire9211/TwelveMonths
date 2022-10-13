@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-public class MainMenuHandler : MonoBehaviour
+public class Preloader : MonoBehaviour
 {
     AsyncOperation loadingScene;
     Slider progressBar;
@@ -14,7 +14,7 @@ public class MainMenuHandler : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {   
         progressBar = GameObject.Find("progressLoader").GetComponent<Slider>();
         if(progressBar)
             Debug.Log(progressBar.name);
@@ -26,9 +26,26 @@ public class MainMenuHandler : MonoBehaviour
             Debug.Log(progressText.name);
         if(!progressText)
             Debug.Log("No object found");
+
+        if(PlayerPrefs.GetInt("FIRSTTIMEOPEN", 1) == 1)
+        {
+            Debug.Log("Game starts for the first time");
+            PlayerPrefs.SetInt("FIRSTTIMEOPEN", 0);
+
+            StartCoroutine(Preload());
+
+            //TODO: Set quality of game for the user
+        }
+        else
+        {
+            Debug.Log("Game has been started once already, welcome back!");
+            StartCoroutine(Preload());
+
+            //TODO: Load into MainMenu without any additional steps
+        }
     }
 
-    IEnumerator GameLoader()
+    IEnumerator Preload()
     {
         loadingScene = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
 
@@ -44,28 +61,5 @@ public class MainMenuHandler : MonoBehaviour
 
             yield return null;
         }
-    }
-
-    public void NewGame()
-    {
-        try
-        {
-            StartCoroutine(GameLoader());
-        }
-        catch (Exception ex)
-        {
-            Debug.Log(ex);
-        }
-    }
-
-    public void LoadGame()
-    {
-        Debug.Log("Load Game");
-    }
-
-    public void QuitGame()
-    {
-        Application.Quit();
-        Debug.Log("Quit Game");
     }
 }
